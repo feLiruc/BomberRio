@@ -22,41 +22,37 @@ public class Server implements Runnable {
 
 
             try {
-        //cria o ServerSocket na porta 7000 se estiver disponível
-            serv = new ServerSocket(porta);
-            //Aguarda uma conexão na porta especificada e retorna o socket que irá comunicar com o
-            System.out.println("Servidor escutando na porta " + porta + "...");
-            s = serv.accept();
-            //cria um BufferedReader para o canal da stream de entrada de dados do socket s
-            entrada = new BufferedReader(new InputStreamReader(s.getInputStream()));
-            //aguarda por algum dado e imprime a linha recebida
-            String dados = entrada.readLine();
-            while (dados.indexOf("sair") == -1) {
-                if (dados != null) {
-                    System.out.println(">> Mensagem: " + dados);
-                    //exibe a mensagem recebida pelo client
-                    JOptionPane.showMessageDialog(null, dados, "Servidor - Mensagem recebida", JOptionPane.WARNING_MESSAGE);
-                }
-                //finaliza a conexão do Socket s
-                s.close();
-                //Estabelece novamente o ServerSocket
+                //cria o ServerSocket na porta 7000 se estiver disponível
+                serv = new ServerSocket(porta);
+                //Aguarda uma conexão na porta especificada e retorna o socket que irá comunicar com o
+                System.out.println("Servidor escutando na porta " + porta + "...");
                 s = serv.accept();
-                //BufferedReader para o canal da stream de entrada de dados do socket s
+                //cria um BufferedReader para o canal da stream de entrada de dados do socket s
                 entrada = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                //Aguarda por algum dado e imprime a linha recebida
-                dados = entrada.readLine();
-            }
-        }
-        catch (IOException e
-
-
-            ) {
+                //aguarda por algum dado e imprime a linha recebida
+                String dados = entrada.readLine();
+                while (dados.indexOf("sair") == -1) {
+                    if (dados != null) {
+                        String[] dados1 = dados.split(";");
+                        String mensagem = dados1[0].split(":")[1].toString();
+                        String usuario = dados1[1].split(":")[1].toString();
+                        GamePlay.newMessage(usuario, mensagem);
+                        //System.out.println(">> Mensagem: " + dados);
+                        //exibe a mensagem recebida pelo client
+                    }
+                    //finaliza a conexão do Socket s
+                    s.close();
+                    //Estabelece novamente o ServerSocket
+                    s = serv.accept();
+                    //BufferedReader para o canal da stream de entrada de dados do socket s
+                    entrada = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                    //Aguarda por algum dado e imprime a linha recebida
+                    dados = entrada.readLine();
+                }
+            }catch (IOException e) {
             //Imprime uma notificação na saída padrão caso haja algo errado.
             e.printStackTrace();
-        }
-
-
-            finally {
+        } finally {
             try {
                 //Encerra o socket de comunicação
                 s.close();
